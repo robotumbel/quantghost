@@ -991,6 +991,55 @@ Prune ratio & unstructured & structured\\
 \end{tabular*}
 \end{table}
 
+\subsection{A uniform metric set across the pipeline}\label{sec:uniform}
+The tables above report survival and recovery at the level most natural to each
+experiment, which a reviewer rightly noted makes cross-table comparison awkward. We
+therefore report, for a single fixed operating point, the full chain of metrics the
+end-to-end claim actually depends on, at every transform and averaged over independent
+trials (Table~\ref{tab:uniform}). The operating point is a $256$-byte payload
+($K{=}2048$ message bits) protected by a rate-$0.8$ LT fountain code to $N{=}2560$ coded
+bits, tiled across the $P=8.5\times10^{5}$ weights of a real ResNet-56 at redundancy
+$r=P/N\approx332$; each row is the mean over three independent trials (fresh payload and
+embedding seed). We report, left to right, the raw per-carrier code-LSB bit-error rate
+\emph{before} voting, the coded-bit error rate \emph{after} majority vote, the message-bit
+error rate \emph{after} LT decoding, and the fraction of trials whose recovered bytes are a
+SHA-256 match to the original file.
+
+The chain is now legible. INT8 is lossless at every level, as the by-construction argument
+predicts. Under $30\%$ pruning and under three epochs of fine-tuning (with or without a
+subsequent INT8 step) the raw channel carries $13$--$14\%$ bit errors, but majority vote
+removes them entirely and the file is recovered byte-exactly in all three trials. The
+operating point breaks at $50\%$ pruning: the raw error ($0.247$) is too high for the vote to
+clean at $r{=}332$, the LT decoder fails, and no trial recovers, and by $70\%$ the voted
+channel is at chance. This is the same frontier as Table~\ref{tab:prune} seen at a higher
+capacity: that table survives $50\%$ pruning because it runs at $r{=}3326$ (a $256$-bit
+message), whereas here a $332\times$-larger payload at $r{=}332$ does not, which is precisely
+the capacity--robustness dial of \eqref{eq:redund} rather than an inconsistency between
+tables. Only byte-exact (file-OK) delivery is a success for a binary payload, and the table
+states it directly for every condition.
+
+\begin{table}[!tb]\centering
+\caption{Uniform four-level metric set on a real ResNet-56 at one operating point
+($256$-byte payload, LT rate $0.8$, redundancy $r{=}332$), mean over three independent
+trials. Raw BER is per-carrier before voting; post-vote is per coded bit; post-ECC is per
+message bit after LT decoding; file OK is SHA-256 match (trials succeeding / total).
+Chance BER $0.5$.}
+\label{tab:uniform}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcccc@{}}
+\toprule
+Transform & raw BER & post-vote & post-ECC & file OK\\
+\midrule
+embed (clean) & 0.000 & 0.000 & 0.000 & 3/3\\
+INT8 & 0.000 & 0.000 & 0.000 & 3/3\\
+prune 30\% & 0.143 & 0.000 & 0.000 & \textbf{3/3}\\
+prune 50\% & 0.247 & 0.147 & 0.476 & 0/3\\
+prune 70\% & 0.351 & 0.509 & 0.496 & 0/3\\
+fine-tune 3ep & 0.128 & 0.000 & 0.000 & \textbf{3/3}\\
+fine-tune $+$ INT8 & 0.128 & 0.000 & 0.000 & \textbf{3/3}\\
+\bottomrule
+\end{tabular*}
+\end{table}
+
 \subsection{Neuron permutation at real scale}
 Table~\ref{tab:neuperm} reports a faithful neuron permutation on a real ResNet-18,
 implemented with the residual, batch-norm and downsample bookkeeping that a correct

@@ -1,0 +1,23 @@
+﻿python : Using cache found in C:\Users\ekoar/.cache\torch\hub\chenyaofo_pytorch-cifar-models_master
+At line:2 char:1
++ python scripts/34_uniform_metrics.py --pbytes 256 --trials 3 --ft_epo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Using cache fou...r-models_master:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+device=cuda  P=851,504  payload=256 B (K=2048 bits)  LT coded N=2560  redundancy r=P/N=332x  trials=3
+
+  trial 1/3 done
+  trial 2/3 done
+  trial 3/3 done
+
+transform          raw BER  post-vote  post-ECC   file OK
+embed (clean)       0.0000     0.0000    0.0000 3/3
+INT8                0.0000     0.0000    0.0000 3/3
+prune 30%           0.1429     0.0000    0.0000 3/3
+prune 50%           0.2470     0.1466    0.4756 0/3
+prune 70%           0.3512     0.5092    0.4964 0/3
+finetune 3ep        0.1276     0.0000    0.0000 3/3
+finetune+INT8       0.1276     0.0000    0.0000 3/3
+
+baca: metrik seragam 4-aras tiap transform, purata 3 cubaan bebas, pada SATU operating point (r=332x). raw BER = sebelum undi; post-vote = selepas undi majoriti; post-ECC = selepas LT; file OK = padanan SHA-256.
