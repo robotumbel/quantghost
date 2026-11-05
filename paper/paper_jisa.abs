@@ -1,32 +1,20 @@
-Pre-trained networks now circulate as shared artifacts, so a tampered checkpoint on a
-popular hub reaches every downstream user. Prior attacks such as StegoNet, EvilModel
-and MaleficNet show that float32 weights can hide megabytes of data at negligible
-accuracy cost, yet they assume the model is run exactly as published. It rarely is.
-Before reaching an edge or medical (IoMT) device a model is quantized to INT8, pruned
-and fine-tuned, and we confirm on real networks that these routine steps erase
-mantissa-bit payloads entirely. We then show that they need not. We present \sys, a
-quantization-aware embedding that writes each payload bit into the INT8 code that
-quantization produces, so it survives by construction; placing every weight at a random point inside its code's bin
-keeps the mantissa distribution natural and defeats byte-image steganalysis, while
-redundant coding carries the payload through pruning and fine-tuning. On a real
-ResNet-50 a $3.2$\,MB payload survives INT8 at $99.9999\%$ fidelity; the payload also
-survives PyTorch's production INT8 kernel byte-exactly once the embedding matches the
-framework's scale convention; on a real
-ResNet-56 the attack costs $0.19$ percentage points of accuracy; and against the
-released Model X-Ray detector on a diverse model population our payload is
-indistinguishable from benign weights ($0.50$, chance), whereas the prior attack is
-flagged ($0.81$). Underlying these results is a limit we prove for the function-preserving
-neuron-permutation group of convolutional and dense layers: a capacity-robustness-stealth
-trilemma in which at most two of the three hold at once, so any stealthy,
-quantization-robust, permutation-invariant channel is bounded by
-$\sum_\ell k_h^{(\ell)}k_w^{(\ell)}$ bits. The high-capacity payload survives INT8,
-pruning and fine-tuning \emph{in the weights}, but a faithful neuron permutation
-(function-preserving to $10^{-14}$) erases it; what then survives is only that small
-invariant channel, enough to carry a $128$-bit key whose ciphertext is delivered out of
-band. We are explicit that under permutation this is survival of a bootstrap key channel,
-not of the in-weight payload. We also propose a sub-quantum
-residual detector that reliably flags the off-the-shelf attack (ROC-AUC $0.98$--$1.0$
-across a narrow and a diverse $3000$-model zoo) where byte-level steganalysis fails, while
-showing that an adaptive attacker still reaches chance on a diverse population, so detection
-must be backed by the structural bound. Deployment sanitization alone is therefore
-incomplete, and we set out what closing the gap requires.
+Pre-trained networks circulate as shared artifacts, so a tampered checkpoint on a popular
+hub reaches every downstream user. Prior weight-steganography attacks hide megabytes in
+float32 mantissas, yet their reported capacity rests on an untested assumption: that the
+model is deployed exactly as published. It rarely is. Before reaching an edge or medical
+(IoMT) device a model is quantized to INT8, pruned and fine-tuned, and we confirm on real
+networks that these steps erase mantissa-bit payloads, while a faithful MaleficNet
+survives them only at watermark-scale capacity. We present \sys, a quantization-aware
+embedding that writes each payload bit into the INT8 code quantization produces, so it
+survives by construction, and places each weight at a random point in its code bin to keep
+the mantissa distribution benign; redundant coding carries the payload through pruning and
+fine-tuning. \sys{} revises the picture: a $3.2$\,MB payload survives INT8 on ResNet-50
+($99.9999\%$) and the production PyTorch kernel byte-exactly, at a cost of $0.19$ accuracy
+points on ResNet-56, and evades the Model X-Ray detector on a diverse population
+($0.50$ vs.\ $0.81$ for prior art). A capacity-robustness-stealth trilemma we prove bounds
+any stealthy, quantization-robust, permutation-invariant channel to
+$\sum_\ell k_h k_w$ bits, so a faithful neuron permutation erases the high-capacity payload
+but a $196$-bit invariant channel survives to carry an out-of-band key; a proposed
+sub-quantum residual detector flags the basic attack (AUC $0.98$--$1.0$) but an adaptive
+attacker reaches chance. Deployment sanitization alone is therefore incomplete, and the
+trilemma gives defenders a concrete target.
