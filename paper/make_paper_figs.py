@@ -39,29 +39,29 @@ fig, ax = plt.subplots(figsize=(7.2, 4.3))
 ax.set_xlim(0, 100); ax.set_ylim(0, 100); ax.axis("off")
 
 # --- ATTACKER lane (boxes 62-89, label 92) ---
-ax.text(1, 92, "ATTACKER", fontsize=8.6, weight="bold", color=C["navy"])
-box(ax, 3, 77, 17, 11, "Pre-trained\nFP32 model", C["lite"], C["navy"], 7.5)
-box(ax, 3, 63, 17, 11, "Payload\n(encrypt + ECC)", C["lite"], C["navy"], 7.5)
+ax.text(1, 92, "ATTACKER", fontsize=11, weight="bold", color=C["navy"])
+box(ax, 3, 77, 17, 11, "Pre-trained\nFP32 model", C["lite"], C["navy"], 9.3)
+box(ax, 3, 63, 17, 11, "Payload\n(encrypt + ECC)", C["lite"], C["navy"], 9.3)
 box(ax, 28, 66, 23, 15, "Quantization-aware\nstealthy embed (Alg. 1)\n+ redundancy",
-    C["lite"], C["navy"], 7.3)
-box(ax, 60, 69, 18, 12, "Stego model\non model hub", C["lite"], C["navy"], 7.5)
+    C["lite"], C["navy"], 9.0)
+box(ax, 60, 69, 18, 12, "Stego model\non model hub", C["lite"], C["navy"], 9.3)
 arrow(ax, 20, 82, 28, 76); arrow(ax, 20, 68, 28, 71)
 arrow(ax, 51, 73.5, 60, 74.5)
 arrow(ax, 69, 69, 69, 56, C["teal"])   # hub -> deployment
 
 # --- VICTIM lane (label 57, pills 41-53) ---
-ax.text(1, 57.5, "VICTIM DEPLOYMENT", fontsize=8.6, weight="bold", color=C["teal"])
+ax.text(1, 57.5, "VICTIM DEPLOYMENT", fontsize=11, weight="bold", color=C["teal"])
 dep = [("INT8\nquant.", 4), ("Pruning\n(unstr./struct.)", 28), ("Fine-tune\n(same / OOD)", 52),
        ("NeuPerm\n(permutation)", 76)]
 for t, x in dep:
-    box(ax, x, 41, 20, 12, t, C["lite2"], C["teal"], 7.3)
+    box(ax, x, 41, 20, 12, t, C["lite2"], C["teal"], 9.0)
 arrow(ax, 50, 41, 50, 32, C["red"])    # deployment -> detection
 
 # --- DEFENDER + RECOVERY lane (label 33, boxes 17-30) ---
-ax.text(1, 33.5, "DETECTION & RECOVERY", fontsize=8.6, weight="bold", color=C["red"])
-box(ax, 8, 17, 24, 13, "Model X-Ray OSL\n+ byte-level detectors", C["lite3"], C["red"], 7.3)
-box(ax, 41, 17, 18, 13, "Extract +\nmajority vote", C["lite3"], C["red"], 7.5)
-box(ax, 67, 17, 21, 13, "Payload\nrecovered", C["lite3"], C["red"], 7.5)
+ax.text(1, 33.5, "DETECTION & RECOVERY", fontsize=11, weight="bold", color=C["red"])
+box(ax, 8, 17, 24, 13, "Model X-Ray OSL\n+ byte-level detectors", C["lite3"], C["red"], 9.0)
+box(ax, 41, 17, 18, 13, "Extract +\nmajority vote", C["lite3"], C["red"], 9.3)
+box(ax, 67, 17, 21, 13, "Payload\nrecovered", C["lite3"], C["red"], 9.3)
 ax.plot([84.0, 85.3, 87.6], [27.2, 26.0, 28.6], color=C["teal"], lw=2.3, zorder=4,
         solid_capstyle="round")
 arrow(ax, 32, 23.5, 41, 23.5, C["red"]); arrow(ax, 59, 23.5, 67, 23.5, C["red"])
@@ -69,9 +69,9 @@ arrow(ax, 32, 23.5, 41, 23.5, C["red"]); arrow(ax, 59, 23.5, 67, 23.5, C["red"])
 # --- experimental matrix strip (bottom) ---
 ax.add_patch(FancyBboxPatch((2, 1), 96, 11, boxstyle="round,pad=0,rounding_size=0.4",
              fc="#fafafa", ec="0.7", lw=0.9, zorder=0))
-ax.text(4, 8.8, "Models:", fontsize=7, weight="bold"); ax.text(16, 8.8, "ResNet-50 / -56 / -18, MLP-IDS, GHRP STL-10 zoo (119k models)", fontsize=7)
-ax.text(4, 5.6, "Datasets:", fontsize=7, weight="bold"); ax.text(16, 5.6, "ImageNet, CIFAR-10, CICIoMT, CICIoT, STL-10", fontsize=7)
-ax.text(4, 2.4, "Metrics:", fontsize=7, weight="bold"); ax.text(16, 2.4, "bit-survival, top-1 / F1, mantissa-byte entropy, detector centroid / AUC", fontsize=7)
+ax.text(4, 8.8, "Models:", fontsize=8.8, weight="bold"); ax.text(16, 8.8, "ResNet-50 / -56 / -18, MLP-IDS, GHRP STL-10 zoo (119k models)", fontsize=8.8)
+ax.text(4, 5.6, "Datasets:", fontsize=8.8, weight="bold"); ax.text(16, 5.6, "ImageNet, CIFAR-10, CICIoMT, CICIoT, STL-10", fontsize=8.8)
+ax.text(4, 2.4, "Metrics:", fontsize=8.8, weight="bold"); ax.text(16, 2.4, "bit-survival, top-1 / F1, mantissa-byte entropy, detector centroid / AUC", fontsize=8.8)
 fig.savefig("fig_setup.pdf"); plt.close(fig)
 
 # ============================ Fig 1: method schematic ============================
@@ -141,26 +141,26 @@ tri = np.array([V["H"], V["P"], V["S"], V["H"]])
 ax.fill(tri[:, 0], tri[:, 1], color=C["lite"], alpha=0.5, zorder=0)
 ax.plot(tri[:, 0], tri[:, 1], color=C["gray"], lw=1.5, zorder=1)
 ax.text(V["H"][0], V["H"][1] + 0.13, "High-capacity\n$\\Theta(P)$ bits", ha="center", va="bottom",
-        fontsize=9, weight="bold", color=C["navy"])
+        fontsize=11.5, weight="bold", color=C["navy"])
 ax.text(V["P"][0] - 0.05, V["P"][1] - 0.10, "Permutation-\ninvariant", ha="center", va="top",
-        fontsize=9, weight="bold", color=C["teal"])
+        fontsize=11.5, weight="bold", color=C["teal"])
 ax.text(V["S"][0] + 0.05, V["S"][1] - 0.10, "Stealthy +\nquant-robust", ha="center", va="top",
-        fontsize=9, weight="bold", color=C["red"])
+        fontsize=11.5, weight="bold", color=C["red"])
 mid = {"HS": (V["H"] + V["S"]) / 2, "PS": (V["P"] + V["S"]) / 2, "HP": (V["H"] + V["P"]) / 2}
 ax.plot(*mid["HS"], "o", ms=10, color=C["navy"], zorder=3)
 ax.annotate("per-weight code-LSB\n(QuantGhost)\n$1.0\\!\\to\\!0.51$ vs NeuPerm",
-            mid["HS"], (1.30, 0.55), fontsize=7.4, color=C["navy"], ha="left",
+            mid["HS"], (1.30, 0.55), fontsize=9.3, color=C["navy"], ha="left",
             arrowprops=dict(arrowstyle="->", color=C["navy"], lw=0.8))
 ax.plot(*mid["PS"], "o", ms=10, color=C["teal"], zorder=3)
 ax.annotate("spatial-tap channel\n$\\sum k_h k_w$ bits (196)\nsurvives NeuPerm",
-            mid["PS"], (-0.15, -1.32), fontsize=7.4, color=C["teal"], ha="center",
+            mid["PS"], (0.0, -1.78), fontsize=9.3, color=C["teal"], ha="center",
             arrowprops=dict(arrowstyle="->", color=C["teal"], lw=0.8))
 ax.plot(*mid["HP"], "o", ms=10, color=C["red"], zorder=3)
 ax.annotate("value-histogram coding\n(not stealthy /\nquant-robust)",
-            mid["HP"], (-2.35, 0.55), fontsize=7.4, color=C["red"], ha="left",
+            mid["HP"], (-2.35, 0.55), fontsize=9.3, color=C["red"], ha="left",
             arrowprops=dict(arrowstyle="->", color=C["red"], lw=0.8))
-ax.text(0, -0.08, "pick at\nmost 2", ha="center", va="center", fontsize=9.5, style="italic", color="0.4")
-ax.set_xlim(-2.45, 2.55); ax.set_ylim(-1.55, 1.55); ax.axis("off")
+ax.text(0, -0.08, "pick at\nmost 2", ha="center", va="center", fontsize=11.5, style="italic", color="0.4")
+ax.set_xlim(-2.45, 2.55); ax.set_ylim(-2.05, 1.55); ax.axis("off")
 fig.savefig("fig_trilemma.pdf"); plt.close(fig)
 
 print("wrote fig_setup.pdf fig_method.pdf fig_prune.pdf fig_detectors.pdf fig_trilemma.pdf")

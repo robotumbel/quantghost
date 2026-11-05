@@ -363,14 +363,14 @@ Figure~\ref{fig:setup} situates \sys{} inside the full pipeline, from the attack
 build step through the victim's transforms to recovery. We describe each component in
 turn; Algorithm~\ref{alg:embed} gives the embedding procedure.
 
-\begin{figure}[t]\centering
-\includegraphics[width=0.40\textwidth]{fig_setupv2.png}
+\begin{figure*}[t]\centering
+\includegraphics[width=0.92\textwidth]{fig_setup.pdf}
 \caption{End-to-end \sys{} pipeline. The attacker embeds an encrypted, error-coded
 payload (Algorithm~\ref{alg:embed}) and publishes a benign-looking model; the victim
 applies any subset of INT8 quantization, pruning, fine-tuning and NeuPerm; recovery
 re-quantizes, reads the code LSBs, and majority-votes.}
 \label{fig:setup}
-\end{figure}
+\end{figure*}
 
 \subsection{Payload preparation}
 Two preprocessing steps make the rest work. First the attacker encrypts the payload
@@ -534,8 +534,8 @@ The pinned weight uses offset $0$.
 The bootstrap channel is small for a reason, and the reason is a hard limit rather than
 an artefact of our construction. We make it precise (Figure~\ref{fig:trilemma}).
 
-\begin{figure}[H]\centering
-\includegraphics[width=0.48\linewidth]{fig_trilemma.pdf}
+\begin{figure}[t]\centering
+\includegraphics[width=\columnwidth]{fig_trilemma.pdf}
 \caption{The trilemma. Each embedding occupies one edge, securing the two adjacent
 properties and giving up the opposite vertex.}
 \label{fig:trilemma}
