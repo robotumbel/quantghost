@@ -1,0 +1,9 @@
+GHRP zoo (3000, 2864)
+per-segment weight std (sanity): ['0.464', '0.453', '0.513', '0.468', '0.479']
+
+Residual detector on DIVERSE GHRP zoo (5-fold CV, 5 seeds, mean+/-std):
+  residual detector, basic attack    0.980 +/- 0.003
+  residual detector, adaptive attack 0.537 +/- 0.042
+  (CIFAR carrier zoo was 1.000 / 0.754 -- compare generalization)
+
+ROC -> results/DET_ghrp_roc.npz

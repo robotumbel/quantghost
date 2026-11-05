@@ -1,0 +1,31 @@
+# Large data — regenerated/downloaded at runtime, not shipped in the repo
+data/cifar/
+data/torchhub/
+data/imagenet*/
+*.pt
+weights.npy
+
+# Keep the small carrier zoos that experiments need:
+!data/zoo_cifar.npz
+!data/ghrp_stl10_sub.npz
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+
+# Build/package archives (regenerated; too large for the repo)
+*.zip
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+# keep the built submission PDF
+!tifs/paper_ieee.pdf

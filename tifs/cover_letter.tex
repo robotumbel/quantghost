@@ -1,0 +1,102 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\pagestyle{empty}
+\setlength{\parskip}{0.7em}
+
+\begin{document}
+
+\noindent Kurniabudi \emph{(Corresponding Author)}\\
+Master of Information System, Universitas Dinamika Bangsa\\
+Jambi 36138, Indonesia\\
+\href{mailto:kurniabudi@unama.ac.id}{kurniabudi@unama.ac.id}\\
+\emph{Manuscript submitted by co-author Eko Arip Winanto on behalf of all authors.}
+
+\vspace{1em}
+\noindent To: The Editor-in-Chief\\
+\noindent \emph{IEEE Transactions on Information Forensics and Security}
+
+\vspace{1em}
+\noindent \textbf{Re: Submission of an original research manuscript}
+
+\vspace{0.5em}
+\noindent Dear Editor,
+
+We are pleased to submit our manuscript, \textbf{``Surviving Sanitization with
+QuantGhost: Deployment-Robust and Stealthy Steganography in Neural-Network Weights,''}
+for consideration as an original research article in the \emph{IEEE Transactions on
+Information Forensics and Security}.
+
+Pre-trained neural networks are increasingly shared through public model hubs, which
+turns the model file itself into a supply-chain attack surface. Prior weight-steganography
+attacks (StegoNet, EvilModel, MaleficNet) hide megabyte-scale payloads in float32
+weights, but, as we demonstrate on real models, those payloads are completely erased by
+the routine deployment transforms that production systems apply: INT8 quantization,
+pruning, and fine-tuning. These are also the very operations the community has proposed
+as defenses. Our paper asks, and answers, whether a payload can survive the full
+deployment pipeline while remaining stealthy and accuracy-preserving, and turns the answer
+into both a fundamental limit and a concrete defense.
+
+The manuscript makes the following contributions:
+
+\begin{itemize}
+\item \textbf{A capacity--robustness--stealth trilemma.} We prove that no
+  weight-embedding scheme can be simultaneously high-capacity, permutation-invariant,
+  and stealthy-quantization-robust, with a tight bound of $\sum_\ell k_h^{(\ell)}
+  k_w^{(\ell)}$ bits on any permutation-invariant channel. This limit governs prior
+  robust watermarking as well as our own attack.
+\item \textbf{QuantGhost.} We present a quantization-aware, distribution-preserving
+  embedding that reaches the high-capacity, stealthy, quantization-robust corner of the
+  trilemma. It survives INT8, pruning, and fine-tuning at $3.2$\,MB on a real ResNet-50
+  for only $0.19$ percentage points of accuracy, and we validate that it survives
+  byte-exactly through PyTorch's \emph{production} INT8 kernel, not merely an analytical
+  quantizer.
+\item \textbf{An attack and its detector.} Against the released Model X-Ray steganalyzer
+  QuantGhost is statistically indistinguishable from benign weights on a diverse model
+  population, where the prior attack is detected. We then propose a targeted sub-quantum
+  residual detector that reliably flags the basic attack across a narrow and a diverse
+  $3000$-model zoo, while honestly showing that an adaptive attacker reaches chance on a
+  realistic population, so detection must be backed by a structural bound.
+\item \textbf{Limits of permutation defenses.} A faithful, full-model neuron permutation
+  on a real ResNet-18, verified function-preserving to machine precision over $30$
+  independent permutations, removes the high-capacity payload, yet a $196$-bit
+  permutation-invariant channel survives and end-to-end bootstraps full recovery of an
+  AES-encrypted payload, so permutation-based sanitization is incomplete.
+\item \textbf{Generality and reproducibility.} We show the attack is architecture- and
+  domain-agnostic on a real Vision Transformer and through a cross-dataset study on
+  IoMT/IoT intrusion-detection models (CICIoMT, CICIoT), set out the requirements for a
+  complete defense, and release the full code, data, and a one-to-one table/figure-to-script
+  mapping on Zenodo.
+\end{itemize}
+
+We believe the work is a strong fit for the journal. \emph{IEEE Transactions on
+Information Forensics and Security} is a leading venue for steganography, steganalysis,
+information hiding, and machine-learning security; our manuscript contributes a proven
+information-theoretic limit, a new attack, and a new detector for the protection of
+machine-learning supply chains, with direct relevance to the IoT/IoMT deployments TIFS
+readers study.
+
+This research is offensive in nature but carried out to strengthen defenses. All
+payloads in our experiments are encrypted random bytes or an AES key; no live malware is
+embedded, executed, or distributed. We will responsibly disclose our findings to the
+authors of the affected detector and defense (Model X-Ray and NeuPerm) prior to
+publication, and the paper proposes concrete mitigations.
+
+We confirm that this manuscript is original, has not been published previously, and is
+not under consideration for publication elsewhere. All authors have read and approved
+the submission and declare no competing interests.
+
+Thank you for considering our work. We look forward to the reviewers' comments.
+
+\vspace{1em}
+\noindent Sincerely,
+
+\vspace{1.5em}
+\noindent Kurniabudi\\
+\emph{Corresponding author, on behalf of all authors}\\
+(Eko Arip Winanto, Mohd Yazid Idris, and Kurniabudi)\\[0.3em]
+\emph{Submitted via ScholarOne Manuscripts by Eko Arip Winanto
+(\href{mailto:winanto@graduate.utm.my}{winanto@graduate.utm.my}).}
+
+\end{document}

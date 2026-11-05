@@ -1,0 +1,21 @@
+﻿device=cuda arch=cifar10_resnet56
+python : Using cache found in C:\Users\ekoar/.cache\torch\hub\chenyaofo_pytorch-cifar-models_master
+At line:2 char:1
++ python scripts/32_maleficnet_baseline.py --K 512 --c 0.05 --ft_epochs ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Using cache fou...r-models_master:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+embeddable weights P=851,504  weight std=0.02205  gamma=0.001103 (c=0.05)
+MaleficNet DSSS: K=512 bits, spreading factor n/K=1,663
+base top-1=94.25%
+
+transform                   recovery    top-1
+embed (no transform)           0.971   94.11%
+INT8 per-tensor                0.971   94.20%
+prune unstruct 30%             0.973   93.86%
+prune unstruct 50%             0.971   92.50%
+finetune 3ep                   0.971   94.30%
+finetune + INT8                0.971   94.25%
+
+baca: MaleficNet spread-spectrum survives SMALL perturbations (light prune/finetune) by design, but its sub-quantum signal is erased by INT8 (recovery -> ~0.5 chance), because the quantization step is coarser than gamma. Contrast QuantGhost: INT8 survival 1.000 by construction. Accuracy cost of MaleficNet embed = +0.14 pp.

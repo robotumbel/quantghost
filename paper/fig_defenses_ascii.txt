@@ -1,0 +1,60 @@
+================================================================================
+  Defense-in-depth against QuantGhost  —  the complete sanitizer  (blueprint)
+================================================================================
+
+            Untrusted model downloaded from a hub
+                          |
+                          v
+   +------------------------------------------------------------+
+   |  LAYER 1  —  DETECTION GATE                                |
+   |    sub-quantum residual steganalyzer  (Algorithm 2)        |
+   |    + byte-entropy test  + weight value-distribution test    |
+   |                                                            |
+   |        stego? --- YES --->  QUARANTINE / reject            |
+   +-----------------------------+------------------------------+
+                                 |  no  (or proceed to sanitize anyway)
+                                 v
+   +------------------------------------------------------------+
+   |  LAYER 2  —  CAPACITY BOUND                                |
+   |    heavy INT8/INT4 quantization  OR                        |
+   |    stochastic weight perturbation                          |
+   |      => shrinks / bounds the positional capacity           |
+   +-----------------------------+------------------------------+
+                                 |
+                                 v
+   +------------------------------------------------------------+
+   |  LAYER 3  —  NEURON PERMUTATION  (NeuPerm)                 |
+   |    function-preserving channel shuffle                     |
+   |      => DESTROYS high-capacity positional payload          |
+   |         (recovery 1.000 -> 0.508 = chance)                 |
+   |      X  but the spatial-tap INVARIANT channel SURVIVES     |
+   |         (<= SUM_l k_h k_w bits;  196 on ResNet-18)         |
+   +-----------------------------+------------------------------+
+                                 |
+                                 v
+   +------------------------------------------------------------+
+   |  LAYER 4  —  INVARIANT-STATISTICS INSPECTION              |
+   |    audit per-spatial-tap statistics  +                     |
+   |    INT8 code-LSB predictability test                       |
+   |      => closes the residual bootstrap (key / URL) channel  |
+   +-----------------------------+------------------------------+
+                                 |
+                                 v
+                    Sanitized model  ->  deploy
+
+--------------------------------------------------------------------------------
+WHY ALL FOUR LAYERS  (mapped to the trilemma corners)
+   The attacker may hold at most 2 of:
+     { high-capacity , permutation-invariant , stealthy-quant-robust }.
+   - Layer 1 catches the (high-capacity, stealthy-robust) positional attack.
+   - Layer 3 removes that positional payload once permutation is applied.
+   - Layer 4 catches the (permutation-invariant, stealthy-robust) residual.
+   No single layer covers all three corners; only their CONJUNCTION does.
+
+DRAWING TIPS
+   * 4 stacked layers, top-to-bottom flow; color each layer differently.
+   * Layer 1: a branch arrow "stego -> quarantine".
+   * Layer 3: show the split "positional X destroyed" vs "invariant V survives".
+   * Put the trilemma triangle small on the right, with each layer pointing to
+     the corner it covers.
+================================================================================

@@ -1,0 +1,16 @@
+# QuantGhost — reproducibility requirements.
+# Install torch/torchvision matching your CUDA from https://pytorch.org first;
+# the versions below are the exact ones used for the paper (CUDA 12.8 build).
+torch==2.10.0          # paper used 2.10.0+cu128 (CPU build also works, slower)
+torchvision==0.25.0    # pretrained ResNet-18/50, ViT-B/16, CIFAR loaders
+numpy==2.2.6
+scikit-learn==1.7.1    # logistic-regression detector, ROC-AUC, cross-validation
+matplotlib==3.10.6     # figure rendering (make_*_figs.py)
+cryptography==48.0.0   # AES-128 key/payload in the end-to-end bootstrap (24_bootstrap.py)
+
+# Optional — only for the Vision Transformer accuracy table (26_vit.py --acc-hf):
+transformers==4.56.1
+timm==1.0.27
+
+# Pretrained CIFAR ResNet-56 is pulled from torch.hub (chenyaofo/pytorch-cifar-models)
+# at runtime; no manual download needed.

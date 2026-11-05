@@ -1,0 +1,8 @@
+zoo (60, 140384)  (benign carriers)
+
+detector / attacker                        CV ROC-AUC
+mantissa entropy   vs basic QuantGhost          0.500
+residual histogram vs basic QuantGhost          1.000
+residual histogram vs ADAPTIVE QuantGhost       0.771
+
+baca: detektor residual menangkap QuantGhost dasar; lawan attacker adaptif (offset rentang penuh) sinyalnya melemah -> arms race, memotivasi pertahanan struktural (permutasi + inspeksi statistik invarian).

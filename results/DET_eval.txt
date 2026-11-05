@@ -1,0 +1,18 @@
+zoo (60, 140384)
+
+Detector ROC-AUC (5-fold CV, 5 seeds, mean +/- std):
+  mantissa entropy (baseline)      0.500
+  residual detector, basic attack  1.000 +/- 0.000
+  residual detector, adaptive      0.754 +/- 0.049
+
+ROC curves -> results/DET_roc.npz
+
+Arms-race sweep (attacker sub-quantum offset width delta vs detector AUC):
+  delta=0.100  AUC=1.000
+  delta=0.200  AUC=1.000
+  delta=0.300  AUC=1.000
+  delta=0.400  AUC=1.000
+  delta=0.490  AUC=1.000
+  delta=0.499  AUC=0.771
+
+baca: detektor menangkap basic (AUC~1.0); attacker melebarkan offset -> residual makin seragam -> AUC turun mendekati chance, tapi terbatas oleh pin & bentuk benign.

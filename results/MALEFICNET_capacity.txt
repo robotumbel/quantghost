@@ -1,0 +1,21 @@
+﻿python : Using cache found in C:\Users\ekoar/.cache\torch\hub\chenyaofo_pytorch-cifar-models_master
+At line:2 char:1
++ python scripts/33_maleficnet_capacity.py 2>&1 | Tee-Object -FilePath  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Using cache fou...r-models_master:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+P=851,504  gamma=0.001103 (c=0.05)
+
+        K  spread n/K   clean    INT8
+      512       1,663   0.971   0.971
+    2,048         415   0.851   0.854
+    8,192         103   0.704   0.704
+   32,768          25   0.601   0.601
+
+fit: per-bit SNR d0=1.891 at K=512; d(K)=d0*sqrt(K0/K)
+  extrapolated K=   32,768: d=0.236  recovery~=0.593
+  extrapolated K=  262,144: d=0.084  recovery~=0.533
+  extrapolated K=  851,504: d=0.046  recovery~=0.518
+
+baca: recovery meluruh 1/sqrt(K). Pada K=P (1 bit/weight = regim QuantGhost) MaleficNet ~= chance. INT8 nyaris tak menambah kerosakan: yang mengehadkan MaleficNet ialah KAPASITAS (spreading gain), bukan kuantisasi.

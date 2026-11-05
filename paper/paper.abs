@@ -1,0 +1,24 @@
+Pre-trained networks now circulate as shared artifacts, so a tampered checkpoint on a
+popular hub reaches every downstream user. Prior attacks such as StegoNet, EvilModel
+and MaleficNet show that float32 weights can hide megabytes of data at negligible
+accuracy cost, yet they assume the model is run exactly as published. It rarely is.
+Before reaching an edge or medical (IoMT) device a model is quantized to INT8, pruned
+and fine-tuned, and we confirm on real networks that these routine steps erase
+mantissa-bit payloads entirely. We then show that they need not. We present \sys, a
+quantization-aware embedding that writes each payload bit into the INT8 code that
+quantization produces, so it survives by construction; placing every weight at a random point inside its code's bin
+keeps the mantissa distribution natural and defeats byte-image steganalysis, while
+redundant coding carries the payload through pruning and fine-tuning. On a real
+ResNet-50 a $3.2$\,MB payload survives INT8 at $99.9999\%$ fidelity; on a real
+ResNet-56 the attack costs $0.19$ percentage points of accuracy; and against the
+released Model X-Ray detector on a diverse model population our payload is
+indistinguishable from benign weights ($0.50$, chance), whereas the prior attack is
+flagged ($0.81$). Underlying these results is a fundamental limit we prove, the
+capacity-robustness-stealth trilemma: at most two of the three hold together, and any
+permutation-invariant channel, ours or prior watermarking, is bounded by the sum of
+$k_h k_w$ over convolution layers. A faithful neuron permutation, function-preserving
+to $10^{-14}$, removes the high-capacity payload but leaves that small invariant
+channel intact, which suffices to bootstrap recovery. We also propose a sub-quantum
+residual detector that flags QuantGhost (ROC-AUC $1.0$) where byte-level steganalysis
+fails. Deployment sanitization alone is therefore incomplete, and we set out what closing
+the gap requires.

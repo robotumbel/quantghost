@@ -1,0 +1,22 @@
+device=cuda arch=cifar10_resnet56
+Using cache found in C:\Users\ekoar/.cache\torch\hub\chenyaofo_pytorch-cifar-models_master
+embeddable weights=851,504  base top-1=94.25%
+
+PRUNING (n_msg=256, redundancy=3326x)
+transform               recovery    top-1
+(embed, no prune)          1.000   93.94%
+prune unstruct 30%         1.000   93.82%
+prune struct 30%           1.000   10.00%
+prune unstruct 50%         0.977   92.05%
+prune struct 50%           0.535   10.89%
+prune unstruct 70%         0.535   78.25%
+prune struct 70%           0.535   10.00%
+prune unstruct 90%         0.535   19.88%
+prune struct 90%           0.535   10.00%
+
+FINE-TUNING (3 epochs, real CIFAR-10 train)
+  n_msg   redund  recovery    top-1
+    256    3326x     1.000   94.23%
+   4096     207x     1.000   94.30%
+
+baca: pruning unstruct selamat ~30% lalu meluruh; structured lebih cepat mati. fine-tune = transform tersulit -> redundansi tinggi (n_msg kecil) menang. recovery dilaporkan berdampingan dgn top-1 di model NYATA.

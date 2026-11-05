@@ -1,0 +1,14 @@
+device=cuda  loading pretrained ResNet-18 ...
+  ...5/30
+  ...10/30
+  ...15/30
+  ...20/30
+  ...25/30
+  ...30/30
+
+NeuPerm over 30 independent random permutations (real ResNet-18):
+channel               no-perm     mean     std     min     max
+flat-positional         1.000    0.522   0.023   0.488   0.586
+spatial-invariant       1.000    1.000   0.000   1.000   1.000
+
+positional 95% CI = [0.5135, 0.5302] (chance 0.5); spatial-invariant min over all seeds = 1.000

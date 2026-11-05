@@ -1,0 +1,71 @@
+================================================================================
+  Figure 1 — QuantGhost: end-to-end experimental pipeline  (blueprint)
+================================================================================
+
+[ ATTACKER  —  build the QuantGhost stego model ]
+
+  +------------------+          +---------------------------------------------+
+  | Pre-trained      |          |  PAYLOAD PREPARATION                        |
+  | FP32 model   W   |          |   raw payload                               |
+  +--------+---------+          |     |  AES-CTR encrypt  -> uniform ciphertext|
+           |                    |     v                                       |
+           |                    |   LDPC / fountain ECC   (erasure repair)    |
+           |                    |     |  tile x r   (redundancy  r = P / L)    |
+           |                    |     v   coded payload bits  b                |
+           |                    +-----------------------+---------------------+
+           |                                            |
+           v                                            v
+  +-----------------------------------------------------------------------+
+  |  QuantGhost EMBED   (Algorithm 1, applied per weight tensor)          |
+  |   1.  scale     s = max|W| / qmax            (qmax = 127 for INT8)    |
+  |   2.  code      q = clip( round(W / s), -qmax, qmax )                 |
+  |   3.  write     LSB(|q|) <- b                (payload in INT8 code)   |
+  |   4.  stealth   W~ = ( q + u ) * s ,   u ~ Uniform(-0.49, 0.49)       |
+  |   5.  pin       hold one max weight at |q|=qmax  ->  victim's         |
+  |                 recomputed scale equals s  (grids coincide)          |
+  +-----------------------------------+-----------------------------------+
+                                      |
+                                      v
+  +-----------------------------------------------------------------------+
+  |  STEGO MODEL  W~     survives INT8 *by construction*                  |
+  |  mantissa-byte entropy = 7.999 (benign) ;  capacity = 1 bit / weight  |
+  +-----------------------------------+-----------------------------------+
+                                      |  publish
+                                      v
+                          [  M O D E L   H U B  ]
+                                      |  download
+======================================|=========================================
+[ VICTIM  —  deploy: apply ANY subset of sanitizing transforms ]
+                                      v
+   +-----------+    +------------+    +--------------+    +------------------+
+   | INT8 PTQ  |    | Pruning    |    | Fine-tune    |    | NeuPerm          |
+   | per-tensor|    | unstruct./ |    | same-task /  |    | permute channels |
+   | / channel |    | structured |    | OOD (cross-  |    | (function-       |
+   |           |    |            |    |  dataset)    |    |  preserving)     |
+   +-----+-----+    +-----+------+    +------+-------+    +--------+---------+
+          \_______________\________________/__________________/
+                                      |
+======================================|=========================================
+[ DEFENDER  —  steganalysis ]         v
+   +-------------------------------------------------------------------+
+   |  Model X-Ray OSL | byte-entropy | value-dist | MalConv | hist-KL  |
+   |  QuantGhost: OSL = 0.50 (evaded) ; caught only by entropy/value   |
+   +-----------------------------------+-------------------------------+
+                                       |   (model is still deployed)
+======================================|=========================================
+[ RECOVERY  —  at the deployed model ]v
+
+   re-quantize (scale s)  ->  read LSB(|q|)  ->  majority vote (de-tile)
+                          ->  LDPC decode    ->  AES decrypt   ->  PAYLOAD  [OK]
+
+--------------------------------------------------------------------------------
+ THE LIMIT  (capacity-robustness-stealth trilemma):
+   NeuPerm erases the high-capacity positional payload   (1.000 -> 0.508),
+   but the permutation-INVARIANT channel survives,  bounded by
+             C  <=  SUM_layers  k_h * k_w     (= 196 bits on ResNet-18)
+   enough to bootstrap a key / URL / decryptor seed.
+--------------------------------------------------------------------------------
+ Models:   ResNet-50 / -56 / -18 ,  MLP-IDS ,  Model-Zoos STL-10 (119k models)
+ Datasets: ImageNet , CIFAR-10 , CICIoMT , CICIoT , STL-10
+ Metrics:  bit-survival , top-1 / F1 , mantissa-byte entropy , detector centroid
+================================================================================

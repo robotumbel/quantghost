@@ -1,0 +1,36 @@
+=== C3c: REAL Model X-Ray OSL on DIVERSE GHRP zoo, STRENGTHENED support (airtight) ===
+Date: 2026-06-19
+Zoo: GHRP STL10 small-CNN hyperparameter-diverse, 3000-model random subsample
+     (ghrp_stl10_sub.npz; full 119k zoo OOM-kills the loader, subsample is memory-light).
+Detector: Model X-Ray OSL Siamese CNN, few-shot (train_fsl/evaluate_model), mode ub.
+Setup: 20 benign + 20 malicious SUPPORT (vs 3+3 in the under-powered pilot), 5 repeats,
+       300 held-out test models. Payload: structured (/bin/bash).
+
+attack                        centroid    1-NN   verdict
+naive X-LSB X=8 (control)        0.807   0.794   DETECTED
+qaware-stealthy (ours,global)    0.504   0.508   EVADED (chance)
+
+per-repeat (centroid):
+  naive: 0.792 0.832 0.815 0.735 0.860   -> mean 0.807
+  ours:  0.465 0.532 0.512 0.495 0.515   -> mean 0.504
+
+INTERPRETATION (airtight):
+- The positive control is RESTORED: with adequate support the OSL clearly DETECTS the
+  naive X-LSB attack (0.81). The detector demonstrably works on this diverse zoo.
+- The SAME detector fails to separate our qaware-stealthy embedding from benign
+  (0.50 = chance), consistently across 5 repeats.
+=> Claim #2 holds: our embedding evades the real released Model X-Ray OSL detector on a
+   realistic, diverse benign population -- a detector that still catches the prior-art
+   naive attack. The earlier "ours DETECTED 0.747" was an artifact of the homogeneous
+   pilot zoo (near-identical benign models inflate few-shot separability).
+
+Progression of evidence:
+  homogeneous pilot (60 toy):   naive 1.00 / ours 0.747  (both inflated; ours "detected")
+  diverse GHRP, 3+3 support:    naive 0.59 / ours 0.50   (under-powered; control failed)
+  diverse GHRP, 20+20 support:  naive 0.81 / ours 0.50   (AIRTIGHT; control holds)
+
+Reproduce:
+  python ModelXRay/_subsample_ghrp.py          # makes ghrp_stl10_sub.npz (once)
+  bash ModelXRay/_run_c3_ghrp_sub.sh           # this run (support 20+20, 5 repeats)
+Note: read progress only via the WSL file share; running stray `wsl -e` checks during the
+run can disrupt/kill the background job (and the full-zoo loader OOMs -- use the subsample).

@@ -1,0 +1,16 @@
+device=cuda  CICIoMT (29982, 39) attack-rate=0.95
+MLP linear weights=13,312  linear tensors=3  => NeuPerm-invariant capacity = 3 bits (sum k_h k_w, =1 per dense layer)
+
+payload 1664 B (redundancy 208x)  survival INT8 = 1.000
+
+condition            acc      F1
+orig FP32         97.85%   0.989
+clean INT8        97.85%   0.989
+embed FP32        97.85%   0.989
+embed+INT8        97.85%   0.989
+
+cross-dataset CICIoMT->CICIoT (domain-shift fine-tune, same 39 features)
+  CICIoT F1 before adapt=0.930  after 8ep fine-tune=0.982
+  payload recovery after cross-domain fine-tune = 0.469  (redundancy 208x)
+
+baca: serangan agnostik-arsitektur/domain (MLP IDS tabular); akurasi/F1 terjaga; payload selamat lewat INT8 dan fine-tune lintas-dataset; kapasitas invarian FC = 3 bit (trilemma bound dgn k_h k_w=1).

@@ -1,0 +1,13 @@
+device=cuda  loading pretrained ResNet-18 ...
+permutation-invariant capacity = 196 bits (key needs 128)
+
+payload 4096 B  |  AES-128 key sha256=32b9c4bd7c23
+embedded: 32768-bit ciphertext (positional) + 128-bit key (invariant)
+
+applied victim pipeline: INT8 quantization + 30% pruning + faithful NeuPerm
+
+positional payload recovery   = 0.500   (NeuPerm destroys it)
+invariant key recovery        = 1.000   (128/128 bits)
+decrypt out-of-band ciphertext with recovered key -> payload byte-exact: True
+
+VERDICT: the high-capacity payload embedded in the weights is erased by NeuPerm (0.50 = chance), yet the 128-bit key in the permutation-invariant channel survives the full INT8+prune+NeuPerm pipeline and decrypts the payload byte-exactly. NeuPerm bounds but does not close the channel.

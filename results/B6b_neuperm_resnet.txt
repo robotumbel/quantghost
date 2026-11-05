@@ -1,0 +1,10 @@
+device=cuda  loading pretrained ResNet-18 (ImageNet)...
+max|d_logit| fp32=1.76e-03  fp64=1.07e-14  (fp64 ~ machine-eps => function-preserving; fp32 = summation-order rounding over 18 layers => accuracy IDENTICAL)
+
+conv tensors=20  conv weights=11,166,912  spatial-invariant capacity = 196 bits (sum kh*kw)
+
+scheme               no-perm  after-PERM
+flat-positional        1.000       0.508
+spatial-invariant      1.000       1.000
+
+VERDICT (real ResNet-18): faithful NeuPerm (d_logit fp32=1.8e-03, fp64=1.1e-14) destroys the high-capacity flat payload (1.00->0.51=chance) but the spatial-invariant channel survives (1.00->1.00). Aggregate invariant capacity = 196 bits across the real net. Trilemma confirmed at real scale.

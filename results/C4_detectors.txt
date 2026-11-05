@@ -1,0 +1,17 @@
+zoo (60, 140384)
+
+repeat 0 done
+repeat 1 done
+repeat 2 done
+repeat 3 done
+repeat 4 done
+
+=== second-opinion detectors (mean acc; 0.5=chance=evaded) ===
+detector              naive     ours  verdict(ours)
+malconv_lite          1.000    0.497  EVADED
+byte_entropy          1.000    1.000  DETECTED
+histogram_kl          1.000    0.493  EVADED
+weight_value_dist     0.500    0.980  DETECTED
+byte_autocorr         1.000    0.500  EVADED
+
+CSV -> results/ours_vs_detectors.csv

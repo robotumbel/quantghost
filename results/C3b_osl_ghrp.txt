@@ -1,0 +1,33 @@
+=== C3b: REAL Model X-Ray OSL detector on the DIVERSE GHRP zoo (vs our homogeneous pilot) ===
+Date: 2026-06-19
+Zoo: GHRP STL10 small-CNN, hyperparameter-diverse (dataset_stl_small_hyp_rand.pt)
+     119,304 models x 2,864 weights  (cf. pilot zoo: 60 homogeneous toy CNNs)
+Detector: Model X-Ray OSL Siamese CNN, few-shot (train_fsl/evaluate_model), mode ub
+Setup: 2 repeats, 3 benign + 3 malicious support (QUICK pilot setup)
+Payload: structured (/bin/bash) so naive X-LSB is in its detectable regime.
+
+attack                        centroid    1-NN   verdict
+naive X-LSB X=8 (control)        0.592    0.598   EVADED
+qaware-stealthy (ours,global)    0.506    0.501   EVADED (chance)
+
+--- comparison with homogeneous pilot zoo (results/C3_osl_real.txt) ---
+                       homogeneous(60)   diverse GHRP(119k)
+naive X-LSB X=8            1.000              0.592
+ours (global)             0.747              0.506
+
+INTERPRETATION (honest):
+1. CONFIRMED: the homogeneous pilot zoo INFLATED detection. On a realistic diverse
+   benign population our embedding sits at exactly chance (0.50) -> indistinguishable
+   from benign. The earlier "ours detected 0.747" was a homogeneous-zoo artifact.
+2. CAVEAT (validity): the positive control ALSO collapsed (naive 1.0 -> 0.59). With
+   only 3+3 few-shot support, the OSL cannot learn the benign manifold of a 119k-model
+   diverse zoo, so it detects NOTHING -- not even the crude naive attack. This run is
+   therefore UNDER-POWERED: it shows our embed evades, but cannot yet show it evades a
+   detector that still catches naive.
+3. For a publication-grade claim, re-run with a larger support set (e.g. 20+20) + more
+   repeats so the control (naive) is detected (~0.8+) while ours stays ~0.5. NOT done
+   here by decision (compute); the current result is reported with this caveat.
+
+Reproduce: weights.npy cached at ~/ghrp_zoos/stl10/; then
+  bash ModelXRay/_run_c3_ghrp.sh --quick      # this run
+  (for the stronger run: raise support size in run_ours_vs_osl.py run(), --n-repeats 5)

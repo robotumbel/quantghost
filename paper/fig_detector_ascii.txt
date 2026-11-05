@@ -1,0 +1,78 @@
+================================================================================
+  Sub-Quantum Residual Steganalyzer  —  detector architecture (blueprint)
+================================================================================
+
+PRINCIPLE
+  QuantGhost places each weight at a UNIFORM offset inside its INT8 bin, so the
+  sub-quantum residual  r = w/s - round(w/s)  is (near-)uniform on [-0.5, 0.5).
+  A BENIGN tensor's residual is NOT uniform: small weights dominate, so r is
+  peaked near 0. The detector learns this difference in residual shape.
+
+--------------------------------------------------------------------------------
+(A) FEATURE EXTRACTION  —  run on every model (one pass over the weights)
+--------------------------------------------------------------------------------
+
+   +-------------------------+
+   |  Model under test       |
+   |  conv/linear weights W  |
+   +------------+------------+
+                |  for each weight tensor  W^(l)
+                v
+   +-------------------------------------------------------------+
+   |  PER-TENSOR QUANTIZATION RESIDUAL                           |
+   |    scale     s   = max|W^(l)| / q_max       (q_max = 127)   |
+   |    code      q   = round( W^(l) / s )                       |
+   |    residual  r   = W^(l)/s - q        in [-0.5, 0.5)        |
+   +----------------------------+--------------------------------+
+                                |
+                                v
+   +-------------------------------------------------------------+
+   |  RESIDUAL HISTOGRAM   h^(l)  in R^B   (B = 40 bins,         |
+   |  uniform over [-0.5, 0.5), L1-normalized to sum 1)         |
+   +----------------------------+--------------------------------+
+                                |  collect over all L tensors
+                                v
+   +-------------------------------------------------------------+
+   |  FEATURE VECTOR   x = (1/L) * SUM_l  h^(l)    in R^B        |
+   |  (mean residual histogram across tensors; one vector/model)|
+   +----------------------------+--------------------------------+
+                                |
+                                v
+                         feature  x in R^40
+
+--------------------------------------------------------------------------------
+(B) TRAINING  (offline, once)            (C) INFERENCE  (per suspect model)
+--------------------------------------------------------------------------------
+   benign models  ---> x, label 0          suspect model ---> feature x
+   stego  models  ---> x, label 1                 |
+            |                                      v
+            v                            +--------------------------+
+   +--------------------------+          | Logistic Regression      |
+   | Logistic Regression      |  theta   | score  p = sigma(w.x+b)  |
+   | fit  (5-fold CV)         |--------->| decide  p > tau ?        |
+   +--------------------------+          +------------+-------------+
+                                                      |
+                                                      v
+                                          +-----------------------+
+                                          |  benign   /   STEGO   |
+                                          +-----------------------+
+
+--------------------------------------------------------------------------------
+RESULTS  (5-fold CV ROC-AUC, CIFAR carrier zoo;  chance = 0.500)
+--------------------------------------------------------------------------------
+   mantissa-byte entropy (baseline)  vs basic QuantGhost ....... 0.500   (fails)
+   residual histogram (OURS)         vs basic QuantGhost ....... 1.000
+   residual histogram (OURS)         vs ADAPTIVE QuantGhost ..... 0.771
+   (adaptive = full-range offset; still > chance because the scale-pinned
+    weight must stay exact for survival, and a perfectly uniform residual is
+    itself anomalous vs the benign shape)
+
+--------------------------------------------------------------------------------
+NOTES FOR THE DRAWING
+  * 3 stages, color by role:  (blue) input + residual math,
+    (green) histogram + feature,  (red/orange) classifier + decision.
+  * Show the two residual shapes as small inset sparklines:
+        benign:  a peak at r=0   |    QuantGhost:  a flat line (uniform)
+  * Put the RESULTS as a small table/box at the bottom.
+  * Optional: a tiny ROC curve inset (AUC 1.00 basic, 0.77 adaptive).
+================================================================================
