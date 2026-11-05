@@ -1,0 +1,120 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\pagestyle{empty}
+\setlength{\parskip}{0.7em}
+
+\begin{document}
+
+\noindent Kurniabudi \emph{(Corresponding Author)}\\
+Master of Information System, Universitas Dinamika Bangsa\\
+Jambi 36138, Indonesia\\
+\href{mailto:kurniabudi@unama.ac.id}{kurniabudi@unama.ac.id}\\
+\emph{Manuscript submitted by co-author Eko Arip Winanto on behalf of all authors.}
+
+\vspace{1em}
+\noindent To: The Editor-in-Chief\\
+\noindent \emph{Journal of Information Security and Applications} (Elsevier)
+
+\vspace{1em}
+\noindent \textbf{Re: Submission of an original research manuscript}
+
+\vspace{0.5em}
+\noindent Dear Editor,
+
+We are pleased to submit our manuscript, \textbf{``Surviving Sanitization with
+QuantGhost: Deployment-Robust and Stealthy Steganography in Neural-Network Weights,''}
+for consideration as an original research article in the \emph{Journal of Information
+Security and Applications} (JISA).
+
+Pre-trained neural networks are increasingly shared through public model hubs, which
+turns the model file itself into a supply-chain attack surface. Prior weight-steganography
+attacks hide megabyte-scale payloads in float32 weights, but their survival under real
+deployment has never been tested. We show, on real models, that the routine transforms a
+production system applies---INT8 quantization, pruning, and fine-tuning---erase the
+mantissa-bit payloads of StegoNet- and EvilModel-style attacks entirely, and that a
+faithful spread-spectrum MaleficNet survives those transforms only at watermark-scale
+capacity. Our paper asks, and answers, whether a payload can survive the full deployment
+pipeline at high capacity while remaining stealthy and accuracy-preserving, and turns the
+answer into both a fundamental limit and a concrete defense.
+
+The manuscript makes the following contributions:
+
+\begin{itemize}
+\item \textbf{A capacity--robustness--stealth trilemma.} For the function-preserving
+  neuron-permutation group of convolutional and dense layers, we prove that no
+  weight-embedding scheme can be simultaneously high-capacity, permutation-invariant, and
+  stealthy-quantization-robust: any stealthy, quantization-robust, permutation-invariant
+  channel is bounded by $\sum_\ell k_h^{(\ell)} k_w^{(\ell)}$ bits, a value our
+  construction attains.
+\item \textbf{QuantGhost.} We present a quantization-aware, distribution-preserving
+  embedding that occupies the high-capacity, stealthy, quantization-robust corner of the
+  trilemma. It survives INT8, pruning, and fine-tuning at $3.2$\,MB on a real ResNet-50
+  for only $0.19$ percentage points of accuracy, and survives byte-exactly through
+  PyTorch's \emph{production} INT8 kernel, not merely an analytical quantizer.
+\item \textbf{A measured MaleficNet baseline.} Rather than quote prior art from its
+  reported design, we re-implement MaleficNet and run it on the same INT8/pruning/
+  fine-tuning pipeline. Its spread-spectrum payload does survive these transforms, but its
+  recovery decays as $1/\sqrt{K}$ and reaches chance near one bit per weight, so it is
+  transform-robust only at low capacity. This makes the trilemma concrete across two real
+  constructions: only QuantGhost survives at high capacity.
+\item \textbf{An attack and its detector.} Against the released Model X-Ray steganalyzer,
+  QuantGhost is statistically indistinguishable from benign weights on a diverse model
+  population where the prior attack is detected. We propose a targeted sub-quantum residual
+  detector that reliably flags the basic attack across a narrow and a diverse
+  $3000$-model zoo, while honestly showing that an adaptive attacker reaches chance on a
+  realistic population, so detection must be backed by a structural bound.
+\item \textbf{Limits of permutation defenses.} A faithful, full-model neuron permutation
+  on a real ResNet-18, verified function-preserving to machine precision, removes the
+  high-capacity payload; but a $196$-bit permutation-invariant channel survives and
+  bootstraps recovery of an out-of-band, AES-encrypted payload, so permutation-based
+  sanitization is incomplete.
+\item \textbf{Generality and reproducibility.} We show the attack is architecture- and
+  domain-agnostic on a real Vision Transformer and through a cross-dataset study on
+  IoMT/IoT intrusion-detection models (CICIoMT, CICIoT), set out the requirements for a
+  complete defense, and release the full code, data, and a one-to-one
+  table/figure-to-script mapping as an open repository at
+  \href{https://github.com/robotumbel/quantghost}{github.com/robotumbel/quantghost}.
+\end{itemize}
+
+We believe the work is a strong fit for JISA. The journal is a leading venue for
+information hiding, steganography and steganalysis, and machine-learning security; it has
+published closely related work, including the Model~X-Ray steganalyzer that our attack
+evades and that we build our proposed detector against. Our manuscript contributes a
+proven capacity limit, a new high-capacity deployment-robust attack, a measured comparison
+with the strongest prior method, and a new detector, with direct relevance to the IoT/IoMT
+deployments JISA readers study.
+
+In the interest of full transparency, an earlier and substantially shorter version of this
+work was declined without external review by JISA in June~2026. The present manuscript is
+substantially revised and extended: it adds the capacity--robustness--stealth trilemma with
+a rigorous proof, a measured MaleficNet baseline and capacity sweep, validation through a
+production INT8 kernel, a faithful full-model neuron-permutation study, a proposed
+steganalysis detector with an honest adaptive-attacker analysis, a Vision Transformer and
+cross-dataset generalization study, and a uniform end-to-end metric accounting. We submit
+it in that light and defer entirely to your judgment on its suitability.
+
+This research is offensive in nature but carried out to strengthen defenses. All payloads
+in our experiments are encrypted random bytes or an AES key; no live malware is embedded,
+executed, or distributed. We will responsibly disclose our findings to the authors of the
+affected detector and defense (Model~X-Ray and NeuPerm) prior to publication, and the
+paper proposes concrete mitigations.
+
+We confirm that this manuscript is original, has not been published previously, and is not
+under consideration for publication elsewhere. All authors have read and approved the
+submission and declare no competing interests.
+
+Thank you for considering our work. We look forward to the reviewers' comments.
+
+\vspace{1em}
+\noindent Sincerely,
+
+\vspace{1.5em}
+\noindent Kurniabudi\\
+\emph{Corresponding author, on behalf of all authors}\\
+(Eko Arip Winanto, Mohd Yazid Idris, and Kurniabudi)\\[0.3em]
+\emph{Submitted via Editorial Manager by Eko Arip Winanto
+(\href{mailto:winanto@graduate.utm.my}{winanto@graduate.utm.my}).}
+
+\end{document}
